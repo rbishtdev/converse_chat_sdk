@@ -1,0 +1,4 @@
+name: converse_workspace
+
+packages:
+  - packages/*
