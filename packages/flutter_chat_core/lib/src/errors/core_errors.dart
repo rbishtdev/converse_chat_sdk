@@ -12,7 +12,12 @@ abstract class ChatCoreException implements Exception {
   String toString() => '$runtimeType: $message';
 }
 
-/// Thrown when a message fails to pass through the pipeline.
+/// Thrown when SDK fails to initialize correctly.
+class SDKInitializationException extends ChatCoreException {
+  SDKInitializationException(super.message, [super.stackTrace]);
+}
+
+/// Thrown when a message fails to process in the pipeline.
 class MessagePipelineException extends ChatCoreException {
   MessagePipelineException(super.message, [super.stackTrace]);
 }
@@ -25,4 +30,9 @@ class EncryptionException extends ChatCoreException {
 /// Thrown when a plugin throws an unexpected error.
 class PluginException extends ChatCoreException {
   PluginException(super.message, [super.stackTrace]);
+}
+
+/// Thrown when attachment upload or retrieval fails.
+class AttachmentUploadException extends ChatCoreException {
+  AttachmentUploadException(super.message, [super.stackTrace]);
 }
