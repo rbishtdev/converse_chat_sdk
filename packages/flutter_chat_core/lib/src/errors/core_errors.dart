@@ -36,3 +36,18 @@ class PluginException extends ChatCoreException {
 class AttachmentUploadException extends ChatCoreException {
   AttachmentUploadException(super.message, [super.stackTrace]);
 }
+
+/// Thrown when user fetch/update/profile operations fail.
+class UserOperationException extends ChatCoreException {
+   UserOperationException(super.message, [super.stackTrace]);
+}
+
+/// Fallback exception for unexpected or unmapped errors.
+class UnknownChatException extends ChatCoreException {
+   UnknownChatException(super.message, [super.stackTrace]);
+}
+
+/// Thrown for errors related to message operations (send, update, delete).
+class MessageOperationException extends ChatCoreException {
+   MessageOperationException(super.message, [super.stackTrace]);
+}

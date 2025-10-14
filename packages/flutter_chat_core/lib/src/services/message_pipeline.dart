@@ -1,12 +1,18 @@
+import 'package:fpdart/fpdart.dart';
 import '../domain/entities/message.dart';
 import '../plugins/plugin_registry.dart';
 import '../ports/i_chat_repository.dart';
 import 'encryption_strategy.dart';
-import '../errors/core_errors.dart';
+import '../errors/chat_failure.dart';
+import '../errors/error_mapper.dart';
 
 /// Coordinates message transformations before and after delivery.
 ///
 /// Handles encryption, plugin hooks, and ensures message integrity.
+///
+/// Returns [Either] results to maintain a functional flow:
+/// - [Right]: success
+/// - [Left]: [ChatFailure] describing the error
 class MessagePipeline {
   final IChatRepository chatRepository;
   final IEncryptionStrategy encryption;
@@ -19,7 +25,16 @@ class MessagePipeline {
   });
 
   /// Handles sending a message with encryption + plugin hooks.
-  Future<void> send(Message message) async {
+  ///
+  /// Steps:
+  /// 1️⃣ Encrypt message text (if applicable)
+  /// 2️⃣ Run pre-send plugins
+  /// 3️⃣ Send message through the [IChatRepository]
+  ///
+  /// Returns:
+  /// - [Right]: [Unit] if message sent successfully
+  /// - [Left]: [ChatFailure] if encryption, plugin, or repository fails
+  Future<Either<ChatFailure, Unit>> send(Message message) async {
     try {
       var processed = message;
 
@@ -32,15 +47,25 @@ class MessagePipeline {
       // 2️⃣ Run pre-send plugins
       processed = await pluginRegistry.runOnSend(processed);
 
-      // 3️⃣ Send message to repository
-      await chatRepository.sendMessage(processed);
-    } catch (e, stack) {
-      throw MessagePipelineException('Failed to send message: $e', stack);
+      // 3️⃣ Send message via repository
+      final result = await chatRepository.sendMessage(processed);
+
+      return result; // Already an Either<ChatFailure, Unit>
+    } catch (e) {
+      return left(ErrorMapper.fromException(e));
     }
   }
 
   /// Handles received messages: decryption + plugin hooks.
-  Future<Message> processIncoming(Message message) async {
+  ///
+  /// Steps:
+  /// 1️⃣ Run post-receive plugins
+  /// 2️⃣ Decrypt message text (if applicable)
+  ///
+  /// Returns:
+  /// - [Right]: [Message] after processing
+  /// - [Left]: [ChatFailure] if any stage fails
+  Future<Either<ChatFailure, Message>> processIncoming(Message message) async {
     try {
       var processed = await pluginRegistry.runOnReceive(message);
 
@@ -50,9 +75,9 @@ class MessagePipeline {
         processed = processed.copyWith(text: decrypted);
       }
 
-      return processed;
-    } catch (e, stack) {
-      throw MessagePipelineException('Failed to process incoming message: $e', stack);
+      return right(processed);
+    } catch (e) {
+      return left(ErrorMapper.fromException(e));
     }
   }
 }

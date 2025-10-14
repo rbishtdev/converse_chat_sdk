@@ -1,3 +1,5 @@
+import 'package:fpdart/fpdart.dart';
+import '../errors/chat_failure.dart';
 import '../domain/entities/user.dart';
 
 /// Defines the data access contract for user profiles and presence.
@@ -9,27 +11,45 @@ import '../domain/entities/user.dart';
 abstract class IUserRepository {
   /// Returns the currently authenticated user, if any.
   ///
-  /// Returns `null` if no user is logged in.
-  Future<User?> getCurrentUser();
+  /// Returns an [Either]:
+  /// - [Right]: [User] if authenticated, or `null` if no user
+  /// - [Left]: [ChatFailure] if fetching fails
+  Future<Either<ChatFailure, User?>> getCurrentUser();
 
   /// Retrieves user details for a given [userId].
   ///
   /// Implementations may cache users locally for better performance.
-  Future<User?> getUserById(String userId);
+  ///
+  /// Returns:
+  /// - [Right]: [User] if found
+  /// - [Left]: [ChatFailure] if retrieval fails
+  Future<Either<ChatFailure, User?>> getUserById(String userId);
 
   /// Creates or updates a user record in the data store.
   ///
   /// Called when a new user signs up or when their profile changes.
-  Future<void> upsertUser(User user);
+  ///
+  /// Returns:
+  /// - [Right]: [Unit] if operation succeeds
+  /// - [Left]: [ChatFailure] if the write fails
+  Future<Either<ChatFailure, Unit>> upsertUser(User user);
 
   /// Searches for users by text query (name, email, etc.).
   ///
   /// - [query] is a free-text string.
   /// - Returns a list of matching users.
-  Future<List<User>> searchUsers(String query);
+  ///
+  /// Returns:
+  /// - [Right]: List<[User]> if successful
+  /// - [Left]: [ChatFailure] if query fails
+  Future<Either<ChatFailure, List<User>>> searchUsers(String query);
 
   /// Fetches all participants of a chat room.
   ///
   /// Typically used for group chat headers or mentions.
-  Future<List<User>> getChatParticipants(String chatId);
+  ///
+  /// Returns:
+  /// - [Right]: List<[User]> participants
+  /// - [Left]: [ChatFailure] if retrieval fails
+  Future<Either<ChatFailure, List<User>>> getChatParticipants(String chatId);
 }

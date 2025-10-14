@@ -1,5 +1,9 @@
+import 'package:fpdart/fpdart.dart';
+
 import '../domain/entities/message.dart';
 import '../domain/entities/message_status.dart';
+import '../errors/chat_failure.dart';
+import '../errors/error_mapper.dart';
 import '../plugins/plugin_registry.dart';
 import '../ports/i_chat_repository.dart';
 import '../ports/i_attachment_repository.dart';
@@ -30,7 +34,10 @@ class ChatController {
   });
 
   /// Watches messages in real-time for a given chat.
-  Stream<List<Message>> watchMessages(String chatId, {int limit = 50}) {
+  Stream<Either<ChatFailure, List<Message>>> watchMessages(
+      String chatId, {
+        int limit = 50,
+      }) {
     return chatRepository.watchMessages(chatId, limit: limit);
   }
 
@@ -60,27 +67,41 @@ class ChatController {
     required String filePath,
     required String mimeType,
   }) async {
-    try {
-      final attachment = await attachmentRepository.uploadAttachment(
-        chatId: chatId,
-        filePath: filePath,
-        mimeType: mimeType,
-      );
+    // 1️⃣ Upload attachment (returns Either<ChatFailure, Attachment>)
+    final uploadResult = await attachmentRepository.uploadAttachment(
+      chatId: chatId,
+      filePath: filePath,
+      mimeType: mimeType,
+    );
 
-      final message = Message(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        chatId: chatId,
-        senderId: senderId,
-        attachment: attachment,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-        status: MessageStatus.sending,
-      );
+    // 2️⃣ Handle Either using matchAsync (async-aware)
+    await uploadResult.match(
+      // 🔹 Failure → throw typed exception
+          (failure) async => throw ErrorMapper.toException(failure),
 
-      await pipeline.send(message);
-    } catch (e, stack) {
-      throw MessagePipelineException('Attachment send failed: $e', stack);
-    }
+      // 🔹 Success → proceed
+          (attachment) async {
+        final message = Message(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          chatId: chatId,
+          senderId: senderId,
+          attachment: attachment,
+          createdAt: DateTime.now().millisecondsSinceEpoch,
+          status: MessageStatus.sending,
+        );
+
+        // 3️⃣ Send through pipeline
+        final sendResult = await pipeline.send(message);
+
+        await sendResult.match(
+              (failure) async => throw ErrorMapper.toException(failure),
+              (_) async => null,
+        );
+      },
+    );
   }
+
+
 
   /// Disposes the controller and all active plugins.
   Future<void> dispose() async {

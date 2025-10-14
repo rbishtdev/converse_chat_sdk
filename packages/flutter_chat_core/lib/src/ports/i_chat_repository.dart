@@ -1,3 +1,5 @@
+import 'package:fpdart/fpdart.dart';
+import '../errors/chat_failure.dart';
 import '../domain/entities/message.dart';
 
 /// Contract for managing chat message data sources.
@@ -16,7 +18,11 @@ abstract class IChatRepository {
   /// whenever new messages are added, updated, or deleted.
   ///
   /// Implementations may apply pagination limits (default [limit] = 50).
-  Stream<List<Message>> watchMessages(
+  ///
+  /// Returns an [Either] in the stream:
+  /// - [Right]: List of [Message] objects
+  /// - [Left]: A [ChatFailure] describing the error
+  Stream<Either<ChatFailure, List<Message>>> watchMessages(
       String chatId, {
         int limit = 50,
       });
@@ -26,13 +32,21 @@ abstract class IChatRepository {
   /// Implementations should:
   /// - Use server timestamps to prevent client clock drift.
   /// - Optionally update local cache for optimistic UI.
-  Future<void> sendMessage(Message message);
+  ///
+  /// Returns:
+  /// - [Right]: [Unit] on success
+  /// - [Left]: [ChatFailure] if sending fails
+  Future<Either<ChatFailure, Unit>> sendMessage(Message message);
 
   /// Fetches older messages for pagination.
   ///
   /// - [beforeMessageId] indicates the starting point for pagination.
   /// - Returns messages ordered from newest → oldest.
-  Future<List<Message>> fetchMessages(
+  ///
+  /// Returns:
+  /// - [Right]: List of [Message] objects
+  /// - [Left]: [ChatFailure] if retrieval fails
+  Future<Either<ChatFailure, List<Message>>> fetchMessages(
       String chatId, {
         String? beforeMessageId,
         int limit = 50,
@@ -41,15 +55,37 @@ abstract class IChatRepository {
   /// Marks a specific [messageId] as read by a given [userId].
   ///
   /// The repository should update read receipts or message metadata.
-  Future<void> markAsRead(String chatId, String messageId, String userId);
+  ///
+  /// Returns:
+  /// - [Right]: [Unit] if successful
+  /// - [Left]: [ChatFailure] if the update fails
+  Future<Either<ChatFailure, Unit>> markAsRead(
+      String chatId,
+      String messageId,
+      String userId,
+      );
 
   /// Deletes a message from the chat.
   ///
   /// Implementations must ensure that only authorized users can delete.
-  Future<void> deleteMessage(String chatId, String messageId);
+  ///
+  /// Returns:
+  /// - [Right]: [Unit] on success
+  /// - [Left]: [ChatFailure] on failure
+  Future<Either<ChatFailure, Unit>> deleteMessage(
+      String chatId,
+      String messageId,
+      );
 
   /// Updates message content or metadata (e.g., edits, reactions).
   ///
   /// Should only be called by the sender or an admin user.
-  Future<void> updateMessage(String chatId, Message message);
+  ///
+  /// Returns:
+  /// - [Right]: [Unit] if update succeeds
+  /// - [Left]: [ChatFailure] if operation fails
+  Future<Either<ChatFailure, Unit>> updateMessage(
+      String chatId,
+      Message message,
+      );
 }
