@@ -21,7 +21,7 @@ class FirebaseAttachmentRepository implements IAttachmentRepository {
     try {
       final file = File(filePath);
       final ref = storage.ref('chats/$chatId/${file.uri.pathSegments.last}');
-      final task = await ref.putFile(file, SettableMetadata(contentType: mimeType));
+      //final task = await ref.putFile(file, SettableMetadata(contentType: mimeType));
       final url = await ref.getDownloadURL();
 
       final metadata = await ref.getMetadata();

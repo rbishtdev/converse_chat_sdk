@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_chat_core/flutter_chat_core.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:flutter_chat_core/src/errors/chat_failure.dart';
 import 'package:flutter_chat_core/src/errors/error_mapper.dart';
@@ -129,4 +130,30 @@ class FirebaseChatRepository implements IChatRepository {
       return left(ErrorMapper.fromException(e));
     }
   }
+
+  @override
+  Future<Either<ChatFailure, String>> ensureChatExists(
+      String userAId,
+      String userBId,
+      ) async {
+    try {
+      final chatId = ChatIdGenerator.forDirectChat(userAId, userBId);
+      final chatRef = firestore.collection('chats').doc(chatId);
+
+      final chatDoc = await chatRef.get();
+      if (!chatDoc.exists) {
+        await chatRef.set({
+          'id': chatId,
+          'participants': [userAId, userBId],
+          'isGroup': false,
+          'createdAt': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+      }
+      return right(chatId);
+    } catch (e) {
+      return left(UnknownFailure('Failed to ensure chat: $e'));
+    }
+  }
+
 }

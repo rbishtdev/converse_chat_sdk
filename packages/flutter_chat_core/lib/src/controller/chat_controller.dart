@@ -8,7 +8,6 @@ import '../plugins/plugin_registry.dart';
 import '../ports/i_chat_repository.dart';
 import '../ports/i_attachment_repository.dart';
 import '../services/message_pipeline.dart';
-import '../errors/core_errors.dart';
 
 /// High-level API used by Flutter apps or SDK consumers to send and
 /// receive messages.

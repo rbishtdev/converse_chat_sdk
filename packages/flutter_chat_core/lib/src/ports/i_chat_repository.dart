@@ -88,4 +88,18 @@ abstract class IChatRepository {
       String chatId,
       Message message,
       );
+
+  /// ✅ Ensures a chat between [userAId] and [userBId] exists, and returns its chat ID.
+  ///
+  /// Implementations must:
+  /// - Generate deterministic chat IDs (e.g., hashed user IDs)
+  /// - Create the chat document if it doesn't exist
+  /// - Return the chat ID for reuse
+  ///
+  /// This is a convenience method to avoid duplicate 1:1 chats.
+  Future<Either<ChatFailure, String>> ensureChatExists(
+      String userAId,
+      String userBId,
+      );
 }
+
