@@ -10,6 +10,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_chat_core:
+    path: ../flutter_chat_core
+  flutter_chat_adapters:
+    path: ../flutter_chat_adapters
 
 dev_dependencies:
   flutter_test:
