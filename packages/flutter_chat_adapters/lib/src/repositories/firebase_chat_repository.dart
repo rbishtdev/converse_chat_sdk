@@ -1,0 +1,132 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:flutter_chat_core/src/errors/chat_failure.dart';
+import 'package:flutter_chat_core/src/errors/error_mapper.dart';
+import 'package:flutter_chat_core/src/domain/entities/message.dart';
+import 'package:flutter_chat_core/src/ports/i_chat_repository.dart';
+
+class FirebaseChatRepository implements IChatRepository {
+  final FirebaseFirestore firestore;
+
+  FirebaseChatRepository(this.firestore);
+
+  @override
+  Stream<Either<ChatFailure, List<Message>>> watchMessages(
+      String chatId, {
+        int limit = 50,
+      }) {
+    try {
+      final stream = firestore
+          .collection('chats/$chatId/messages')
+          .orderBy('createdAt', descending: true)
+          .limit(limit)
+          .snapshots()
+          .map((snapshot) {
+        final messages = snapshot.docs.map((d) {
+          return Message.fromJson(d.data());
+        }).toList();
+        return right<ChatFailure, List<Message>>(messages);
+      });
+
+      return stream.handleError((e) => left(ErrorMapper.fromException(e)));
+    } catch (e) {
+      return Stream.value(left(ErrorMapper.fromException(e)));
+    }
+  }
+
+  @override
+  Future<Either<ChatFailure, Unit>> sendMessage(Message message) async {
+    try {
+      await firestore
+          .collection('chats/${message.chatId}/messages')
+          .doc(message.id)
+          .set(message.toJson());
+      return right(unit);
+    } catch (e) {
+      return left(ErrorMapper.fromException(e));
+    }
+  }
+
+  @override
+  Future<Either<ChatFailure, List<Message>>> fetchMessages(
+      String chatId, {
+        String? beforeMessageId,
+        int limit = 50,
+      }) async {
+    try {
+      // Explicitly typed query (important for Firestore generics)
+      Query<Map<String, dynamic>> query = firestore
+          .collection('chats/$chatId/messages')
+          .orderBy('createdAt', descending: true)
+          .limit(limit);
+
+      // 🔹 Handle pagination if beforeMessageId is provided
+      if (beforeMessageId != null) {
+        final doc = await firestore
+            .collection('chats/$chatId/messages')
+            .doc(beforeMessageId)
+            .get();
+
+        if (doc.exists) {
+          query = query.startAfterDocument(doc);
+        }
+      }
+
+      // 🔹 Execute query and safely deserialize
+      final snapshot = await query.get();
+      final messages = snapshot.docs
+          .map((d) => Message.fromJson(d.data())).toList();
+
+      return right(messages);
+    } catch (e) {
+      return left(ErrorMapper.fromException(e));
+    }
+  }
+
+
+  @override
+  Future<Either<ChatFailure, Unit>> markAsRead(
+      String chatId,
+      String messageId,
+      String userId,
+      ) async {
+    try {
+      await firestore
+          .collection('chats/$chatId/messages')
+          .doc(messageId)
+          .update({'readBy.$userId': true});
+      return right(unit);
+    } catch (e) {
+      return left(ErrorMapper.fromException(e));
+    }
+  }
+
+  @override
+  Future<Either<ChatFailure, Unit>> deleteMessage(
+      String chatId,
+      String messageId,
+      ) async {
+    try {
+      await firestore.collection('chats/$chatId/messages').doc(messageId).delete();
+      return right(unit);
+    } catch (e) {
+      return left(ErrorMapper.fromException(e));
+    }
+  }
+
+  @override
+  Future<Either<ChatFailure, Unit>> updateMessage(
+      String chatId,
+      Message message,
+      ) async {
+    try {
+      await firestore
+          .collection('chats/$chatId/messages')
+          .doc(message.id)
+          .update(message.toJson());
+      return right(unit);
+    } catch (e) {
+      return left(ErrorMapper.fromException(e));
+    }
+  }
+}
