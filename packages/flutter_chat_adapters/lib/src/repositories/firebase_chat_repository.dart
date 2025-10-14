@@ -19,7 +19,7 @@ class FirebaseChatRepository implements IChatRepository {
     try {
       final stream = firestore
           .collection('chats/$chatId/messages')
-          .orderBy('createdAt', descending: true)
+          .orderBy('createdAt', descending: false)
           .limit(limit)
           .snapshots()
           .map((snapshot) {

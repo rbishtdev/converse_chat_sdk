@@ -1,5 +1,7 @@
 import 'package:flutter_chat_adapters/flutter_chat_adapters.dart';
 import 'package:flutter_chat_core/flutter_chat_core.dart';
+import 'package:flutter_chat_core/src/errors/chat_failure.dart';
+import 'package:fpdart/src/either.dart';
 
 /// The top-level entrypoint for using the Chat SDK.
 ///
@@ -7,11 +9,14 @@ import 'package:flutter_chat_core/flutter_chat_core.dart';
 /// - Firebase initialization
 /// - Repository setup
 /// - Core ChatController creation
+/// - Presence & typing state management
 ///
-/// Usage:
+/// Example usage:
 /// ```dart
-/// final chat = await ChatSDK.initialize();
+/// final chat = await ConverseChatClient.initialize();
 /// await chat.controller.sendText(chatId: "room_1", senderId: "user_123", text: "Hi!");
+/// await chat.setOnlineStatus("user_123", true);
+/// chat.watchUserPresence("user_456").listen((online) => print(online));
 /// ```
 class ConverseChatClient {
   /// The main controller responsible for message operations.
@@ -64,6 +69,42 @@ class ConverseChatClient {
       adapter: adapter,
     );
   }
+
+  // ---------------------------------------------------------------------------
+  // 🔹 PRESENCE & TYPING MANAGEMENT
+  // ---------------------------------------------------------------------------
+
+  /// Marks a user as online or offline.
+  ///
+  /// Call this on app start (`true`) and on dispose or logout (`false`).
+  Future<void> setOnlineStatus(String userId, bool isOnline) async {
+    await adapter.presence.setUserPresence(userId, isOnline);
+  }
+
+  /// Watches the online status of a specific user.
+  ///
+  /// Emits `true` when the user is online, `false` otherwise.
+  Stream<Either<ChatFailure, bool>> watchUserPresence(String userId) {
+    return adapter.presence.watchUserPresence(userId);
+  }
+
+  /// Sets the typing state for the current user in a given chat.
+  ///
+  /// Use `true` when user starts typing, `false` when stops.
+  Future<void> setTypingState(String chatId, String userId, bool isTyping) async {
+    await adapter.presence.setTypingState(chatId, userId, isTyping);
+  }
+
+  /// Watches typing indicators for a specific chat.
+  ///
+  /// Emits a map where keys are userIds and values indicate typing state.
+  Stream<Either<ChatFailure, Map<String, bool>>> watchTypingUsers(String chatId) {
+    return adapter.presence.watchTypingUsers(chatId);
+  }
+
+  // ---------------------------------------------------------------------------
+  // 🔹 CLEANUP
+  // ---------------------------------------------------------------------------
 
   /// Cleans up all active resources, streams, and plugins.
   Future<void> dispose() async {
