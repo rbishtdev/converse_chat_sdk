@@ -45,6 +45,7 @@ class ChatSDK {
     required IUserRepository userRepository,
     required IAttachmentRepository attachmentRepository,
     required IPresenceRepository presenceRepository,
+    required String currentUserId,
 
     /// Optional plugin registry.
     PluginRegistry? pluginRegistry,
@@ -72,6 +73,7 @@ class ChatSDK {
         attachmentRepository: attachmentRepository,
         pipeline: pipeline,
         plugins: plugins,
+        currentUserId: currentUserId
       );
 
       // 5️⃣ Return SDK instance

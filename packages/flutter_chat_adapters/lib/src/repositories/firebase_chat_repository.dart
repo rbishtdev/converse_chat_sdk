@@ -38,10 +38,16 @@ class FirebaseChatRepository implements IChatRepository {
   @override
   Future<Either<ChatFailure, Unit>> sendMessage(Message message) async {
     try {
-      await firestore
+      final docRef = firestore
           .collection('chats/${message.chatId}/messages')
-          .doc(message.id)
-          .set(message.toJson());
+          .doc(message.id);
+
+      // 1️⃣ Write message with initial status
+      await docRef.set(message.toJson());
+
+      // 2️⃣ Immediately update status → sent
+      await docRef.update({'status': MessageStatus.sent.name});
+
       return right(unit);
     } catch (e) {
       return left(ErrorMapper.fromException(e));
@@ -153,6 +159,23 @@ class FirebaseChatRepository implements IChatRepository {
       return right(chatId);
     } catch (e) {
       return left(UnknownFailure('Failed to ensure chat: $e'));
+    }
+  }
+
+  @override
+  Future<Either<ChatFailure, void>> updateMessageStatus(
+      String chatId,
+      String messageId,
+      MessageStatus status,
+      ) async {
+    try {
+      await firestore
+          .collection('chats/$chatId/messages')
+          .doc(messageId)
+          .update({'status': status.name});
+      return right(null);
+    } catch (e) {
+      return left(ErrorMapper.fromException(e));
     }
   }
 

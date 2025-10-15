@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+import '../../flutter_chat_core.dart';
 import '../errors/chat_failure.dart';
 import '../domain/entities/message.dart';
 
@@ -100,6 +101,13 @@ abstract class IChatRepository {
   Future<Either<ChatFailure, String>> ensureChatExists(
       String userAId,
       String userBId,
+      );
+
+  /// Update message status
+  Future<Either<ChatFailure, void>> updateMessageStatus(
+      String chatId,
+      String messageId,
+      MessageStatus status,
       );
 }
 

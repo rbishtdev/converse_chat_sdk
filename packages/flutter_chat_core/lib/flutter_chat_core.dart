@@ -39,7 +39,7 @@ export 'src/domain/value_objects/chat_id.dart';
 export 'src/domain/value_objects/message_id.dart';
 export 'src/domain/value_objects/user_id.dart';
 export 'src/domain/value_objects/timestamp.dart';
-export 'src/domain/entities//message_status.dart';
+export 'src/domain/entities/message_status.dart';
 
 // -----------------------------------------------------------------------------
 // PORTS (INTERFACES)

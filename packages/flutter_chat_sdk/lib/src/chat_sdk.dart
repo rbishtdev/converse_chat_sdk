@@ -42,6 +42,7 @@ class ConverseChatClient {
   /// (for custom Firebase projects or testing).
   static Future<ConverseChatClient> initialize({
     FirebaseChatAdapter? customAdapter,
+    required String currentUserId,
   }) async {
     // Initialize Firebase safely
     await FirebaseAdapterInitializer.ensureInitialized();
@@ -62,6 +63,7 @@ class ConverseChatClient {
       attachmentRepository: adapter.attachments,
       pipeline: pipeline,
       plugins: PluginRegistry(),
+      currentUserId: currentUserId,
     );
 
     return ConverseChatClient._(

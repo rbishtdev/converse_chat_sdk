@@ -1,7 +1,8 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_chat_core/flutter_chat_core.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../domain/entities/message.dart';
-import '../domain/entities/message_status.dart';
 import '../errors/chat_failure.dart';
 import '../errors/error_mapper.dart';
 import '../plugins/plugin_registry.dart';
@@ -24,12 +25,15 @@ class ChatController {
   final IAttachmentRepository attachmentRepository;
   final MessagePipeline pipeline;
   final PluginRegistry plugins;
+  final String currentUserId;
+
 
   ChatController({
     required this.chatRepository,
     required this.attachmentRepository,
     required this.pipeline,
     required this.plugins,
+    required this.currentUserId,
   });
 
   /// Watches messages in real-time for a given chat.
@@ -37,7 +41,14 @@ class ChatController {
       String chatId, {
         int limit = 50,
       }) {
-    return chatRepository.watchMessages(chatId, limit: limit);
+    return chatRepository.watchMessages(chatId, limit: limit).map((either) {
+      return either.map((messages) {
+        for (final message in messages) {
+          _onMessageReceived(message);
+        }
+        return messages;
+      });
+    });
   }
 
   /// Sends a new text message.
@@ -91,7 +102,14 @@ class ChatController {
 
         // 3️⃣ Send through pipeline
         final sendResult = await pipeline.send(message);
-
+        sendResult.map((_) async {
+          // 4️⃣ Update status → sent (after Firestore success)
+          await chatRepository.updateMessageStatus(
+            message.chatId,
+            message.id,
+            MessageStatus.sent,
+          );
+        });
         await sendResult.match(
               (failure) async => throw ErrorMapper.toException(failure),
               (_) async => null,
@@ -100,6 +118,21 @@ class ChatController {
     );
   }
 
+  Future<void> _onMessageReceived(Message message) async {
+    try {
+      // Only update if message is NOT sent by current user
+      if (message.senderId != currentUserId &&
+          message.status == MessageStatus.sent) {
+        await chatRepository.updateMessageStatus(
+          message.chatId,
+          message.id,
+          MessageStatus.delivered
+        );
+      }
+    } catch (e) {
+      debugPrint('⚠️ Failed to update message status: $e');
+    }
+  }
 
 
   /// Disposes the controller and all active plugins.
