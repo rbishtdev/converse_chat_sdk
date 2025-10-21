@@ -1,5 +1,3 @@
-library flutter_chat_sdk;
-
 // Export the SDK facade
 export 'src/chat_sdk.dart';
 

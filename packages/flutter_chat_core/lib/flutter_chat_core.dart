@@ -1,31 +1,3 @@
-/// Flutter Chat Core SDK
-///
-/// This package provides a clean, backend-agnostic chat architecture
-/// built on Clean Architecture principles. It includes:
-/// - Domain entities
-/// - Use cases
-/// - Repositories (ports)
-/// - Services (pipelines, encryption, plugin system)
-/// - Chat controller
-///
-/// The `flutter_chat_core` package does **not** depend on Flutter widgets.
-/// You can use it for pure Dart or backend logic as well.
-///
-/// Example usage:
-///
-/// ```dart
-/// final sdk = await ChatSDK.initialize(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-///
-/// sdk.controller.sendText(
-///   chatId: 'chat_123',
-///   senderId: 'user_456',
-///   text: 'Hello there!',
-/// );
-/// ```
-library flutter_chat_core;
-
 // -----------------------------------------------------------------------------
 // DOMAIN LAYER
 // -----------------------------------------------------------------------------
@@ -83,6 +55,8 @@ export 'src/controller/chat_controller.dart';
 // -----------------------------------------------------------------------------
 
 export 'src/errors/core_errors.dart';
+export 'src/errors/chat_failure.dart';
+export 'src/errors/error_mapper.dart';
 
 // -----------------------------------------------------------------------------
 // SDK ENTRYPOINT

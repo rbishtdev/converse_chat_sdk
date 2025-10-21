@@ -1,7 +1,5 @@
 import 'package:fpdart/fpdart.dart';
 import '../../flutter_chat_core.dart';
-import '../errors/chat_failure.dart';
-import '../domain/entities/message.dart';
 
 /// Contract for managing chat message data sources.
 ///

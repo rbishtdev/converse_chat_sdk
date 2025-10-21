@@ -2,14 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_chat_core/flutter_chat_core.dart';
 import 'package:fpdart/fpdart.dart';
 
-import '../domain/entities/message.dart';
-import '../errors/chat_failure.dart';
-import '../errors/error_mapper.dart';
-import '../plugins/plugin_registry.dart';
-import '../ports/i_chat_repository.dart';
-import '../ports/i_attachment_repository.dart';
-import '../services/message_pipeline.dart';
-
 /// High-level API used by Flutter apps or SDK consumers to send and
 /// receive messages.
 ///

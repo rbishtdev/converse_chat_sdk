@@ -1,7 +1,6 @@
 import 'package:flutter_chat_adapters/flutter_chat_adapters.dart';
 import 'package:flutter_chat_core/flutter_chat_core.dart';
-import 'package:flutter_chat_core/src/errors/chat_failure.dart';
-import 'package:fpdart/src/either.dart';
+import 'package:fpdart/fpdart.dart';
 
 /// The top-level entrypoint for using the Chat SDK.
 ///

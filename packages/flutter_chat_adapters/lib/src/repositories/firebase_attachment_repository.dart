@@ -1,10 +1,7 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:flutter_chat_core/src/domain/entities/attachment.dart';
-import 'package:flutter_chat_core/src/errors/chat_failure.dart';
-import 'package:flutter_chat_core/src/errors/error_mapper.dart';
-import 'package:flutter_chat_core/src/ports/i_attachment_repository.dart';
+import 'package:flutter_chat_core/flutter_chat_core.dart';
 
 
 class FirebaseAttachmentRepository implements IAttachmentRepository {

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-import '../flutter_chat_adapters.dart';
+import 'package:flutter_chat_adapters/flutter_chat_adapters.dart';
 
 
 /// Combines all Firebase-based repositories into one adapter.

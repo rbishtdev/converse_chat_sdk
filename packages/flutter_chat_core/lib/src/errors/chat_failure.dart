@@ -1,6 +1,6 @@
 /// Unified failure model for the Chat SDK.
 ///
-/// Used with Either<ChatFailure, T> to provide
+/// Used with Either ChatFailure, T to provide
 /// consistent, typed error handling across all adapters.
 sealed class ChatFailure {
   final String message;

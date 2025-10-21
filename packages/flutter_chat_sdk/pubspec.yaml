@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  fpdart: ^1.1.0
   flutter_chat_core:
     path: ../flutter_chat_core
   flutter_chat_adapters:

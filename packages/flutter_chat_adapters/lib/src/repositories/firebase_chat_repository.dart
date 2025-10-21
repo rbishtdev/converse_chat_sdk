@@ -1,10 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_chat_core/flutter_chat_core.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:flutter_chat_core/src/errors/chat_failure.dart';
-import 'package:flutter_chat_core/src/errors/error_mapper.dart';
-import 'package:flutter_chat_core/src/domain/entities/message.dart';
-import 'package:flutter_chat_core/src/ports/i_chat_repository.dart';
 
 class FirebaseChatRepository implements IChatRepository {
   final FirebaseFirestore firestore;

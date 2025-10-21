@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_chat_core/src/errors/core_errors.dart';
+import 'package:flutter_chat_core/flutter_chat_core.dart';
 
 /// Initializes Firebase safely for the Chat SDK.
 ///

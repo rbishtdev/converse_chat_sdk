@@ -14,26 +14,26 @@ abstract class IPresenceRepository {
   ///
   /// Called when user connects or disconnects from the app.
   ///
-  /// Returns an [Either]:
-  /// - [Right]: [Unit] if successfully updated
-  /// - [Left]: [ChatFailure] if the operation fails
+  /// Returns an Either:
+  /// - Right: Unit if successfully updated
+  /// - Left: ChatFailure if the operation fails
   Future<Either<ChatFailure, Unit>> setUserPresence(String userId, bool isOnline);
 
   /// Watches presence changes for a specific user.
   ///
-  /// The returned [Stream] emits an [Either] whenever the user’s status changes:
-  /// - [Right]: `true` or `false` (online/offline)
-  /// - [Left]: [ChatFailure] if a stream error occurs
+  /// The returned Stream emits an Either whenever the user’s status changes:
+  /// - Right: `true` or `false` (online/offline)
+  /// - Left: ChatFailure if a stream error occurs
   Stream<Either<ChatFailure, bool>> watchUserPresence(String userId);
 
   /// Updates typing status for a user within a chat.
   ///
-  /// - [chatId]: The chat room ID.
-  /// - [isTyping]: True if the user is currently typing.
+  /// - chatId: The chat room ID.
+  /// - isTyping: True if the user is currently typing.
   ///
   /// Returns:
-  /// - [Right]: [Unit] if successfully updated
-  /// - [Left]: [ChatFailure] if an error occurs
+  /// - Right: Unit if successfully updated
+  /// - Left: ChatFailure if an error occurs
   Future<Either<ChatFailure, Unit>> setTypingState(
       String chatId,
       String userId,
@@ -45,7 +45,7 @@ abstract class IPresenceRepository {
   /// Emits a map where keys are `userIds` and values are their typing states.
   ///
   /// Returns:
-  /// - [Right]: Map<String, bool> with current typing users
-  /// - [Left]: [ChatFailure] on stream failure
+  /// - Right: Map String, bool with current typing users
+  /// - Left: ChatFailure on stream failure
   Stream<Either<ChatFailure, Map<String, bool>>> watchTypingUsers(String chatId);
 }
