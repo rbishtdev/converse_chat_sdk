@@ -2,62 +2,126 @@ import 'package:flutter_chat_adapters/flutter_chat_adapters.dart';
 import 'package:flutter_chat_core/flutter_chat_core.dart';
 import 'package:fpdart/fpdart.dart';
 
-/// The top-level entrypoint for using the Chat SDK.
+/// 🧩 **ConverseChatClient**
 ///
-/// It bundles together:
+/// The top-level entrypoint for using the **Converse Chat SDK**.
+///
+/// This class orchestrates:
 /// - Firebase initialization
-/// - Repository setup
-/// - Core ChatController creation
-/// - Presence & typing state management
+/// - Repository setup for messages, users, presence & attachments
+/// - Message pipeline configuration
+///
+/// It provides a **developer-friendly, domain-based API**:
+/// - `chat.messages` → Send & watch messages
+/// - `chat.users` → Manage user profiles
+/// - `chat.presence` → Track online status & typing indicators
+/// - `chat.attachments` → Upload & download media
 ///
 /// Example usage:
 /// ```dart
-/// final chat = await ConverseChatClient.initialize();
-/// await chat.controller.sendText(chatId: "room_1", senderId: "user_123", text: "Hi!");
-/// await chat.setOnlineStatus("user_123", true);
-/// chat.watchUserPresence("user_456").listen((online) => print(online));
+/// final chat = await ConverseChatClient.initialize(currentUserId: "user_123");
+///
+/// // 🔹 Send a message
+/// await chat.messages.sendText(chatId: "room_1", senderId: "user_123", text: "Hello");
+///
+/// // 🔹 Watch for updates
+/// chat.messages.watchMessages("room_1").listen(print);
+///
+/// // 🔹 Manage presence
+/// await chat.presence.setUserPresence("user_123", true);
+/// chat.presence.watchUserPresence("user_456").listen((online) => print("User online: $online"));
+///
+/// // 🔹 Upload attachments
+/// await chat.attachments.uploadAttachment(
+///   chatId: "room_1",
+///   filePath: "path/to/image.png",
+///   mimeType: "image/png",
+/// );
 /// ```
 class ConverseChatClient {
-  /// The main controller responsible for message operations.
-  final ChatController controller;
+  // ---------------------------------------------------------------------------
+  // 🧠 CORE DOMAINS
+  // ---------------------------------------------------------------------------
 
-  /// Firebase-based repositories for advanced users.
-  final FirebaseChatAdapter adapter;
+  /// Handles all **message-related operations** — sending, receiving,
+  /// marking as read, and real-time streaming of messages.
+  final ChatController messages;
 
-  /// Private constructor.
+  /// Provides **user management** capabilities — fetching profiles,
+  /// searching users, and getting chat participants.
+  final IUserRepository users;
+
+  /// Manages **presence tracking** — online/offline state and typing indicators.
+  final IPresenceRepository presence;
+
+  /// Handles **file and media attachments** — uploading, downloading, and deletion.
+  final IAttachmentRepository attachments;
+
+  /// Internal Firebase adapter reference (used for dependency injection).
+  ///
+  /// This is intentionally private to prevent SDK users from depending
+  /// on a specific backend (Firebase). In future, you can swap it for
+  /// Supabase, REST, or other adapters without changing the public API.
+  final FirebaseChatAdapter _adapter;
+
+  // ---------------------------------------------------------------------------
+  // 🔹 PRIVATE CONSTRUCTOR
+  // ---------------------------------------------------------------------------
+
+  /// Internal constructor — used by [initialize].
+  ///
+  /// Developers should never call this directly; use
+  /// [ConverseChatClient.initialize()] instead.
   ConverseChatClient._({
-    required this.controller,
-    required this.adapter,
-  });
+    required this.messages,
+    required this.users,
+    required this.presence,
+    required this.attachments,
+    required FirebaseChatAdapter adapter,
+  }) : _adapter = adapter;
 
-  /// Initializes the Chat SDK using Firebase as the backend.
+  // ---------------------------------------------------------------------------
+  // 🚀 INITIALIZATION
+  // ---------------------------------------------------------------------------
+
+  /// Initializes the **Converse Chat SDK**.
   ///
-  /// This will:
-  /// - Initialize Firebase (if needed)
-  /// - Setup repositories for messages, users, attachments, and presence
-  /// - Create the [ChatController]
+  /// This method:
+  /// - Ensures Firebase is initialized (if not already)
+  /// - Creates and wires all repositories & services
+  /// - Configures the message pipeline
   ///
-  /// Optionally, you can pass your own [FirebaseChatAdapter] instance
-  /// (for custom Firebase projects or testing).
+  /// You must provide:
+  /// - [currentUserId]: the unique ID of the logged-in user
+  ///
+  /// Optionally:
+  /// - [customAdapter]: inject your own adapter (e.g., for custom Firebase app)
+  ///
+  /// Example:
+  /// ```dart
+  /// final chat = await ConverseChatClient.initialize(
+  ///   currentUserId: FirebaseAuth.instance.currentUser!.uid,
+  /// );
+  /// ```
   static Future<ConverseChatClient> initialize({
-    FirebaseChatAdapter? customAdapter,
     required String currentUserId,
+    FirebaseChatAdapter? customAdapter,
   }) async {
-    // Initialize Firebase safely
+    // 1️⃣ Ensure Firebase is ready
     await FirebaseAdapterInitializer.ensureInitialized();
 
-    // Use provided adapter or default Firebase setup
+    // 2️⃣ Use provided or default adapter
     final adapter = customAdapter ?? await FirebaseChatAdapter.createDefault();
 
-    // Setup message pipeline
+    // 3️⃣ Build the message pipeline (encryption, plugins, etc.)
     final pipeline = MessagePipeline(
       chatRepository: adapter.chat,
       encryption: NoEncryptionStrategy(),
       pluginRegistry: PluginRegistry(),
     );
 
-    // Create controller
-    final controller = ChatController(
+    // 4️⃣ Create message controller
+    final messages = ChatController(
       chatRepository: adapter.chat,
       attachmentRepository: adapter.attachments,
       pipeline: pipeline,
@@ -65,50 +129,107 @@ class ConverseChatClient {
       currentUserId: currentUserId,
     );
 
+    // 5️⃣ Return a fully wired SDK client
     return ConverseChatClient._(
-      controller: controller,
+      messages: messages,
+      users: adapter.users,
+      presence: adapter.presence,
+      attachments: adapter.attachments,
       adapter: adapter,
     );
   }
 
   // ---------------------------------------------------------------------------
-  // 🔹 PRESENCE & TYPING MANAGEMENT
+  // 🌐 PRESENCE SHORTCUT HELPERS
   // ---------------------------------------------------------------------------
 
-  /// Marks a user as online or offline.
+  /// Sets the current user's **online or offline** status.
   ///
-  /// Call this on app start (`true`) and on dispose or logout (`false`).
+  /// Call this:
+  /// - On app start → `true`
+  /// - On app close or logout → `false`
+  ///
+  /// Example:
+  /// ```dart
+  /// await chat.setOnlineStatus(userId, true);
+  /// ```
   Future<void> setOnlineStatus(String userId, bool isOnline) async {
-    await adapter.presence.setUserPresence(userId, isOnline);
+    await presence.setUserPresence(userId, isOnline);
   }
 
-  /// Watches the online status of a specific user.
+  /// Watches a user's **online/offline presence** in real-time.
   ///
-  /// Emits `true` when the user is online, `false` otherwise.
+  /// Returns a [Stream] of `Either<ChatFailure, bool>`,
+  /// where `true` means online and `false` means offline.
+  ///
+  /// Example:
+  /// ```dart
+  /// chat.watchUserPresence("user_456").listen((either) {
+  ///   either.match(
+  ///     (failure) => print("Error: ${failure.message}"),
+  ///     (isOnline) => print("User is ${isOnline ? 'online' : 'offline'}"),
+  ///   );
+  /// });
+  /// ```
   Stream<Either<ChatFailure, bool>> watchUserPresence(String userId) {
-    return adapter.presence.watchUserPresence(userId);
+    return presence.watchUserPresence(userId);
   }
 
-  /// Sets the typing state for the current user in a given chat.
+  /// Updates the **typing state** for a user inside a chat.
   ///
-  /// Use `true` when user starts typing, `false` when stops.
+  /// Call this when:
+  /// - Typing starts → `true`
+  /// - Typing stops → `false`
+  ///
+  /// Example:
+  /// ```dart
+  /// chat.setTypingState(chatId, userId, true);
+  /// ```
   Future<void> setTypingState(String chatId, String userId, bool isTyping) async {
-    await adapter.presence.setTypingState(chatId, userId, isTyping);
+    await presence.setTypingState(chatId, userId, isTyping);
   }
 
-  /// Watches typing indicators for a specific chat.
+  /// Watches **typing indicators** for a chat.
   ///
-  /// Emits a map where keys are userIds and values indicate typing state.
+  /// Returns a [Stream] of user typing states:
+  /// ```dart
+  /// {
+  ///   "user_123": true,
+  ///   "user_456": false,
+  /// }
+  /// ```
   Stream<Either<ChatFailure, Map<String, bool>>> watchTypingUsers(String chatId) {
-    return adapter.presence.watchTypingUsers(chatId);
+    return presence.watchTypingUsers(chatId);
   }
 
   // ---------------------------------------------------------------------------
-  // 🔹 CLEANUP
+  // 🧹 CLEANUP
   // ---------------------------------------------------------------------------
 
-  /// Cleans up all active resources, streams, and plugins.
+  /// Disposes of all controllers, plugins, and active listeners.
+  ///
+  /// Call this when your app closes or the SDK is no longer needed.
   Future<void> dispose() async {
-    await controller.dispose();
+    await messages.dispose();
+  }
+
+  /// Ensures that a 1-on-1 chat exists between two users.
+  ///
+  /// Returns the chat ID as `Right(chatId)` on success,
+  /// or `Left(ChatFailure)` on failure.
+  ///
+  /// Example:
+  /// ```dart
+  /// final chatIdResult = await chat.ensureChatExist("user_1", "user_2");
+  /// chatIdResult.match(
+  ///   (failure) => print("Failed: ${failure.message}"),
+  ///   (chatId) => print("Chat ready: $chatId"),
+  /// );
+  /// ```
+  Future<Either<ChatFailure, String>> ensureChatExists(
+      String userA,
+      String userB,
+      ) async {
+    return await messages.chatRepository.ensureChatExists(userA, userB);
   }
 }
