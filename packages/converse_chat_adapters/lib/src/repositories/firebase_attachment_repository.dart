@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:flutter_chat_core/flutter_chat_core.dart';
+import 'package:converse_chat_core/converse_chat_core.dart';
 
 
 class FirebaseAttachmentRepository implements IAttachmentRepository {

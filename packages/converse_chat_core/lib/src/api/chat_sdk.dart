@@ -1,6 +1,6 @@
 
 
-import '../../flutter_chat_core.dart';
+import '../../converse_chat_core.dart';
 
 /// Core SDK bootstrap class.
 ///

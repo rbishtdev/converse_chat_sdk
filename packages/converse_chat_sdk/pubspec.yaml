@@ -1,4 +1,4 @@
-name: flutter_chat_sdk
+name: converse_chat_sdk
 description: "A new Flutter package project."
 version: 0.0.1
 homepage:
@@ -11,10 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
   fpdart: ^1.1.0
-  flutter_chat_core:
-    path: ../flutter_chat_core
-  flutter_chat_adapters:
-    path: ../flutter_chat_adapters
+  converse_chat_core:
+    path: ../converse_chat_core
+  converse_chat_adapters:
+    path: ../converse_chat_adapters
 
 dev_dependencies:
   flutter_test:

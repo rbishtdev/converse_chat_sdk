@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_chat_sdk/flutter_chat_sdk.dart';
+import 'package:converse_chat_sdk/converse_chat_sdk.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({

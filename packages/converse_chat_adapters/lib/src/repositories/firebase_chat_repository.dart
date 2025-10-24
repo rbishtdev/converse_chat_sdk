@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_chat_core/flutter_chat_core.dart';
+import 'package:converse_chat_core/converse_chat_core.dart';
 import 'package:fpdart/fpdart.dart';
 
 class FirebaseChatRepository implements IChatRepository {

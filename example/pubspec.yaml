@@ -30,8 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_chat_sdk:
-    path: ../packages/flutter_chat_sdk
+  converse_chat_sdk:
+    path: ../packages/converse_chat_sdk
 
   firebase_core: ^4.2.0
   cloud_firestore: ^6.0.3

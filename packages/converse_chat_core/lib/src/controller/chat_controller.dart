@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_chat_core/flutter_chat_core.dart';
+import 'package:converse_chat_core/converse_chat_core.dart';
 import 'package:fpdart/fpdart.dart';
 
 /// High-level API used by Flutter apps or SDK consumers to send and

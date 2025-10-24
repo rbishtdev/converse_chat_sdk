@@ -1,5 +1,5 @@
-import 'package:flutter_chat_adapters/flutter_chat_adapters.dart';
-import 'package:flutter_chat_core/flutter_chat_core.dart';
+import 'package:converse_chat_adapters/converse_chat_adapters.dart';
+import 'package:converse_chat_core/converse_chat_core.dart';
 import 'package:fpdart/fpdart.dart';
 
 /// 🧩 **ConverseChatClient**
@@ -62,6 +62,7 @@ class ConverseChatClient {
   /// This is intentionally private to prevent SDK users from depending
   /// on a specific backend (Firebase). In future, you can swap it for
   /// Supabase, REST, or other adapters without changing the public API.
+  /// ignore: unused_field
   final FirebaseChatAdapter _adapter;
 
   // ---------------------------------------------------------------------------

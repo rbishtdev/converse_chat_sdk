@@ -1,6 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:flutter_chat_core/flutter_chat_core.dart';
+import 'package:converse_chat_core/converse_chat_core.dart';
 
 class FirebasePresenceRepository implements IPresenceRepository {
   final FirebaseDatabase database;

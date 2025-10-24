@@ -1,5 +1,5 @@
 import 'package:fpdart/fpdart.dart';
-import '../../flutter_chat_core.dart';
+import '../../converse_chat_core.dart';
 
 /// Contract for managing chat message data sources.
 ///
