@@ -185,14 +185,13 @@ dart run example/main.dart
 | Package | Description |
 |----------|-------------|
 | [`converse_chat_sdk`](https://pub.dev/packages/converse_chat_sdk) | High-level SDK with Firebase and adapters |
-| [`converse_chat_ui`](https://pub.dev/packages/converse_chat_ui) | Flutter chat widgets and screens |
 | [`converse_chat_adapters`](https://pub.dev/packages/converse_chat_adapters) | Infrastructure integrations (Firebase, REST, etc.) |
 
 ---
 
 ## 🧠 Topics
 
-`chat`, `messaging`, `sdk`, `firebase`, `realtime`, `flutter`, `core`, `clean-architecture`
+`firebase chat`, `chat`, `messaging`, `sdk`, `firebase`, `realtime`, `flutter`, `core`, `clean-architecture`
 
 ---
 
