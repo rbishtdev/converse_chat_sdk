@@ -31,7 +31,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   bool _isTyping = false;
   bool _isOtherUserTyping = false;
   Timer? _typingTimer;
-  late int _lastSeenTime;
+  int? _lastSeenTime;
 
   String get _userA => widget.currentUserId;
   String get _userB => widget.peerUserId;
@@ -168,7 +168,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     if (text.isEmpty) return;
 
     try {
-       _converseChatClient.messages.sendText(
+      _converseChatClient.messages.sendText(
         chatId: _chatId,
         senderId: _userA,
         text: text,
@@ -197,7 +197,13 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(_userB),
-            _isOtherUserTyping ? Text(_isOtherUserOnline ? 'Typing...' : '', style: TextStyle(color: Colors.black, fontSize: 14, fontStyle: FontStyle.italic)) : Text(_isOtherUserOnline ? 'Online' : formatLastSeenWhatsAppStyle(_lastSeenTime), style: TextStyle(color: Colors.black, fontSize: 14)),
+            _isOtherUserTyping ? Text(_isOtherUserOnline ? 'Typing...' : '',
+                style: TextStyle(color: Colors.black,
+                    fontSize: 14,
+                    fontStyle: FontStyle.italic)) : Text(
+                _isOtherUserOnline ? 'Online' : (_lastSeenTime != null)
+                    ? formatLastSeenWhatsAppStyle(_lastSeenTime!)
+                    : '', style: TextStyle(color: Colors.black, fontSize: 14)),
           ],
         ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
