@@ -48,4 +48,10 @@ abstract class IPresenceRepository {
   /// - Right: Map String, bool with current typing users
   /// - Left: ChatFailure on stream failure
   Stream<Either<ChatFailure, Map<String, bool>>> watchTypingUsers(String chatId);
+
+  /// Returns a stream of the user’s last seen timestamp in milliseconds.
+  ///
+  /// - Should emit the timestamp whenever user goes offline or updates presence.
+  /// - Returns `null` if the user has never been online.
+  Stream<Either<ChatFailure, int?>> watchLastSeen(String userId);
 }

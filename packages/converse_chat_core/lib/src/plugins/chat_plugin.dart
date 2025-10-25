@@ -26,4 +26,7 @@ abstract class ChatPlugin {
 
   /// Called when the plugin is being disposed.
   Future<void> onDispose() async {}
+
+  /// Error hook (optional)
+  void onError(Object error, StackTrace stack, Message context) {}
 }

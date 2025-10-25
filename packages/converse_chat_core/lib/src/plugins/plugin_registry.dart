@@ -10,6 +10,7 @@ class PluginRegistry {
 
   /// Registers a [ChatPlugin] to the pipeline.
   void register(ChatPlugin plugin) {
+    if (_plugins.contains(plugin)) return;
     _plugins.add(plugin);
     plugin.onInit();
   }
@@ -17,7 +18,11 @@ class PluginRegistry {
   /// Unregisters all plugins and disposes their resources.
   Future<void> dispose() async {
     for (final plugin in _plugins) {
-      await plugin.onDispose();
+      try {
+        await plugin.onDispose();
+      } catch (_) {
+        // Optionally log plugin disposal error
+      }
     }
     _plugins.clear();
   }
@@ -28,7 +33,11 @@ class PluginRegistry {
   Future<Message> runOnSend(Message message) async {
     var processed = message;
     for (final plugin in _plugins) {
-      processed = await plugin.onSend(processed);
+      try {
+        processed = await plugin.onSend(processed);
+      } catch (e, stack) {
+        plugin.onError.call(e, stack, processed);
+      }
     }
     return processed;
   }
@@ -37,7 +46,11 @@ class PluginRegistry {
   Future<Message> runOnReceive(Message message) async {
     var processed = message;
     for (final plugin in _plugins) {
-      processed = await plugin.onReceive(processed);
+      try {
+        processed = await plugin.onReceive(processed);
+      } catch (e, stack) {
+        plugin.onError.call(e, stack, processed);
+      }
     }
     return processed;
   }

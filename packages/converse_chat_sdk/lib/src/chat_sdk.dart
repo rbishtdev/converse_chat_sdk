@@ -233,4 +233,23 @@ class ConverseChatClient {
       ) async {
     return await messages.chatRepository.ensureChatExists(userA, userB);
   }
+
+  /// Watches the last seen timestamp for a specific user.
+  ///
+  /// Emits either `null` (never online) or an integer timestamp in milliseconds.
+  ///
+  /// Example:
+  /// ```dart
+  /// chat.watchLastSeen("user_123").listen((result) {
+  ///   result.match(
+  ///     (failure) => print("Error: ${failure.message}"),
+  ///     (lastSeen) {
+  ///       if (lastSeen != null) print("Last seen at: $lastSeen");
+  ///     },
+  ///   );
+  /// });
+  /// ```
+  Stream<Either<ChatFailure, int?>> watchLastSeen(String userId) {
+    return presence.watchLastSeen(userId);
+  }
 }

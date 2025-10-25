@@ -26,7 +26,7 @@ class _UserSetupScreenState extends State<UserSetupScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ChatScreen(userA: userA, userB: userB),
+        builder: (_) => ChatScreen(currentUserId: userA, peerUserId: userB),
       ),
     );
   }

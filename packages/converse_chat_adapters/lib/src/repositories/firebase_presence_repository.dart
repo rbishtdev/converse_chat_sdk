@@ -8,12 +8,23 @@ class FirebasePresenceRepository implements IPresenceRepository {
   FirebasePresenceRepository(this.database);
 
   @override
-  Future<Either<ChatFailure, Unit>> setUserPresence(String userId, bool isOnline) async {
+  Future<Either<ChatFailure, Unit>> setUserPresence(
+      String userId,
+      bool isOnline,
+      ) async {
     try {
-      await database.ref('presence/$userId').set({'online': isOnline});
+      final ref = database.ref('presence/$userId');
+
+      await ref.update({
+        'online': isOnline,
+        'lastSeen': isOnline
+            ? ServerValue.timestamp
+            : DateTime.now().millisecondsSinceEpoch,
+      });
+
       return right(unit);
     } catch (e) {
-      return left(ErrorMapper.fromException(e));
+      return left<ChatFailure, Unit>(ErrorMapper.fromException(e));
     }
   }
 
@@ -55,6 +66,30 @@ class FirebasePresenceRepository implements IPresenceRepository {
       }).handleError((e) => left(ErrorMapper.fromException(e)));
     } catch (e) {
       return Stream.value(left(ErrorMapper.fromException(e)));
+    }
+  }
+
+  @override
+  Stream<Either<ChatFailure, int?>> watchLastSeen(String userId) {
+    try {
+      final ref = database.ref('presence/$userId/lastSeen');
+
+      return ref.onValue.map((event) {
+        final value = event.snapshot.value;
+
+        if (value is int) {
+          // ✅ Explicitly cast to correct Either type
+          return right<ChatFailure, int?>(value);
+        }
+
+        // ✅ Even when null, still type as Either<ChatFailure, int?>
+        return right<ChatFailure, int?>(null);
+      }).handleError(
+            (e) => left<ChatFailure, int?>(ErrorMapper.fromException(e)),
+      );
+    } catch (e) {
+      // ✅ Wrap in a Stream with correct generic type
+      return Stream.value(left<ChatFailure, int?>(ErrorMapper.fromException(e)));
     }
   }
 }

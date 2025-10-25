@@ -6,12 +6,12 @@ import 'package:converse_chat_sdk/converse_chat_sdk.dart';
 class ChatScreen extends StatefulWidget {
   const ChatScreen({
     super.key,
-    required this.userA,
-    required this.userB,
+    required this.currentUserId,
+    required this.peerUserId,
   });
 
-  final String userA;
-  final String userB;
+  final String currentUserId;
+  final String peerUserId;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -31,9 +31,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   bool _isTyping = false;
   bool _isOtherUserTyping = false;
   Timer? _typingTimer;
+  late int _lastSeenTime;
 
-  String get _userA => widget.userA;
-  String get _userB => widget.userB;
+  String get _userA => widget.currentUserId;
+  String get _userB => widget.peerUserId;
 
   @override
   void initState() {
@@ -72,6 +73,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           _listenToMessages();
           _listenToPresence();
           _listenToTyping();
+          _listenToLastSeen();
 
           setState(() => _isLoading = false);
         },
@@ -106,6 +108,21 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           if (mounted) {
             setState(() {
               _isOtherUserOnline = isOnline;
+            });
+          }
+        },
+      );
+    });
+  }
+
+  void _listenToLastSeen() {
+    _converseChatClient.watchLastSeen(_userB).listen((result) {
+      result.match(
+            (failure) => debugPrint('❌ Last seen error: ${failure.message}'),
+            (lastSeen) {
+          if (mounted && lastSeen != null) {
+            setState(() {
+              _lastSeenTime = lastSeen;
             });
           }
         },
@@ -180,7 +197,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(_userB),
-            _isOtherUserTyping ? Text(_isOtherUserOnline ? 'Typing...' : '', style: TextStyle(color: Colors.grey, fontSize: 14, fontWeight: FontWeight.bold)) : Text(_isOtherUserOnline ? 'Online' : '', style: TextStyle(color: Colors.grey, fontSize: 14, fontWeight: FontWeight.bold)),
+            _isOtherUserTyping ? Text(_isOtherUserOnline ? 'Typing...' : '', style: TextStyle(color: Colors.black, fontSize: 14, fontStyle: FontStyle.italic)) : Text(_isOtherUserOnline ? 'Online' : formatLastSeenWhatsAppStyle(_lastSeenTime), style: TextStyle(color: Colors.black, fontSize: 14)),
           ],
         ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -302,3 +319,30 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     }
   }
 }
+
+
+String formatLastSeenWhatsAppStyle(int timestamp) {
+  final now = DateTime.now();
+  final lastSeen = DateTime.fromMillisecondsSinceEpoch(timestamp);
+  final diff = now.difference(lastSeen);
+
+  final timeFormat = DateFormat('hh:mm a'); // 12-hour clock (3:45 PM)
+  final dateFormat = DateFormat('d MMM yyyy'); // e.g., 2 Feb 2025
+  final weekdayFormat = DateFormat('EEEE'); // Monday, Tuesday, etc.
+
+  if (diff.inSeconds < 60) {
+    return 'Last seen just now';
+  } else if (diff.inMinutes < 60) {
+    return 'Last seen ${diff.inMinutes} min ago';
+  } else if (diff.inHours < 24 && lastSeen.day == now.day) {
+    return 'Last seen today at ${timeFormat.format(lastSeen)}';
+  } else if (diff.inDays == 1 ||
+      (now.day - lastSeen.day == 1 && now.month == lastSeen.month)) {
+    return 'Last seen yesterday at ${timeFormat.format(lastSeen)}';
+  } else if (diff.inDays < 7) {
+    return 'Last seen ${weekdayFormat.format(lastSeen)} at ${timeFormat.format(lastSeen)}';
+  } else {
+    return 'Last seen on ${dateFormat.format(lastSeen)}';
+  }
+}
+
