@@ -17,7 +17,10 @@ abstract class IPresenceRepository {
   /// Returns an Either:
   /// - Right: Unit if successfully updated
   /// - Left: ChatFailure if the operation fails
-  Future<Either<ChatFailure, Unit>> setUserPresence(String userId, bool isOnline);
+  Future<Either<ChatFailure, Unit>> setUserPresence(
+    String userId,
+    bool isOnline,
+  );
 
   /// Watches presence changes for a specific user.
   ///
@@ -35,10 +38,10 @@ abstract class IPresenceRepository {
   /// - Right: Unit if successfully updated
   /// - Left: ChatFailure if an error occurs
   Future<Either<ChatFailure, Unit>> setTypingState(
-      String chatId,
-      String userId,
-      bool isTyping,
-      );
+    String chatId,
+    String userId,
+    bool isTyping,
+  );
 
   /// Watches typing indicators for a chat room.
   ///
@@ -47,7 +50,9 @@ abstract class IPresenceRepository {
   /// Returns:
   /// - Right: Map String, bool with current typing users
   /// - Left: ChatFailure on stream failure
-  Stream<Either<ChatFailure, Map<String, bool>>> watchTypingUsers(String chatId);
+  Stream<Either<ChatFailure, Map<String, bool>>> watchTypingUsers(
+    String chatId,
+  );
 
   /// Returns a stream of the user’s last seen timestamp in milliseconds.
   ///

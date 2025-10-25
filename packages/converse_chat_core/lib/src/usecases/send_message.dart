@@ -10,10 +10,7 @@ class SendMessage {
   final IChatRepository chatRepository;
   final PluginRegistry pluginRegistry;
 
-  SendMessage({
-    required this.chatRepository,
-    required this.pluginRegistry,
-  });
+  SendMessage({required this.chatRepository, required this.pluginRegistry});
 
   /// Sends a new message after passing through plugin hooks.
   Future<void> call(Message message) async {

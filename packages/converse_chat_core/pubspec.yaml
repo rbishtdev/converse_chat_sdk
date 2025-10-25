@@ -27,5 +27,9 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
 
+screenshots:
+  - description: Converse Chat Core architecture overview
+    path: screenshots/architecture.png
+
 flutter:
 # No assets or fonts yet; can be added later

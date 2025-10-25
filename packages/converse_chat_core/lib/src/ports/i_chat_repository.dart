@@ -22,9 +22,9 @@ abstract class IChatRepository {
   /// - [Right]: List of [Message] objects
   /// - [Left]: A [ChatFailure] describing the error
   Stream<Either<ChatFailure, List<Message>>> watchMessages(
-      String chatId, {
-        int limit = 50,
-      });
+    String chatId, {
+    int limit = 50,
+  });
 
   /// Sends a new [message] to the chat.
   ///
@@ -46,10 +46,10 @@ abstract class IChatRepository {
   /// - [Right]: List of [Message] objects
   /// - [Left]: [ChatFailure] if retrieval fails
   Future<Either<ChatFailure, List<Message>>> fetchMessages(
-      String chatId, {
-        String? beforeMessageId,
-        int limit = 50,
-      });
+    String chatId, {
+    String? beforeMessageId,
+    int limit = 50,
+  });
 
   /// Marks a specific [messageId] as read by a given [userId].
   ///
@@ -59,10 +59,10 @@ abstract class IChatRepository {
   /// - [Right]: [Unit] if successful
   /// - [Left]: [ChatFailure] if the update fails
   Future<Either<ChatFailure, Unit>> markAsRead(
-      String chatId,
-      String messageId,
-      String userId,
-      );
+    String chatId,
+    String messageId,
+    String userId,
+  );
 
   /// Deletes a message from the chat.
   ///
@@ -72,9 +72,9 @@ abstract class IChatRepository {
   /// - [Right]: [Unit] on success
   /// - [Left]: [ChatFailure] on failure
   Future<Either<ChatFailure, Unit>> deleteMessage(
-      String chatId,
-      String messageId,
-      );
+    String chatId,
+    String messageId,
+  );
 
   /// Updates message content or metadata (e.g., edits, reactions).
   ///
@@ -84,9 +84,9 @@ abstract class IChatRepository {
   /// - [Right]: [Unit] if update succeeds
   /// - [Left]: [ChatFailure] if operation fails
   Future<Either<ChatFailure, Unit>> updateMessage(
-      String chatId,
-      Message message,
-      );
+    String chatId,
+    Message message,
+  );
 
   /// ✅ Ensures a chat between [userAId] and [userBId] exists, and returns its chat ID.
   ///
@@ -97,15 +97,14 @@ abstract class IChatRepository {
   ///
   /// This is a convenience method to avoid duplicate 1:1 chats.
   Future<Either<ChatFailure, String>> ensureChatExists(
-      String userAId,
-      String userBId,
-      );
+    String userAId,
+    String userBId,
+  );
 
   /// Update message status
   Future<Either<ChatFailure, void>> updateMessageStatus(
-      String chatId,
-      String messageId,
-      MessageStatus status,
-      );
+    String chatId,
+    String messageId,
+    MessageStatus status,
+  );
 }
-

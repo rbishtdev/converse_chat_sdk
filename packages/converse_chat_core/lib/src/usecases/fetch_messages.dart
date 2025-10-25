@@ -29,10 +29,10 @@ class FetchMessages {
   /// );
   /// ```
   Future<Either<ChatFailure, List<Message>>> call(
-      String chatId, {
-        String? beforeMessageId,
-        int limit = 50,
-      }) async {
+    String chatId, {
+    String? beforeMessageId,
+    int limit = 50,
+  }) async {
     return await chatRepository.fetchMessages(
       chatId,
       beforeMessageId: beforeMessageId,

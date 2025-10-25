@@ -1,5 +1,3 @@
-
-
 import '../../converse_chat_core.dart';
 
 /// Core SDK bootstrap class.
@@ -17,10 +15,7 @@ class ChatSDK {
   /// Optional plugin registry (for analytics, encryption, etc.).
   final PluginRegistry plugins;
 
-  ChatSDK._({
-    required this.controller,
-    required this.plugins,
-  });
+  ChatSDK._({required this.controller, required this.plugins});
 
   /// Initializes the Chat SDK.
   ///
@@ -73,16 +68,16 @@ class ChatSDK {
         attachmentRepository: attachmentRepository,
         pipeline: pipeline,
         plugins: plugins,
-        currentUserId: currentUserId
+        currentUserId: currentUserId,
       );
 
       // 5️⃣ Return SDK instance
-      return ChatSDK._(
-        controller: controller,
-        plugins: plugins,
-      );
+      return ChatSDK._(controller: controller, plugins: plugins);
     } catch (e, stack) {
-      throw SDKInitializationException('ChatSDK initialization failed: $e', stack);
+      throw SDKInitializationException(
+        'ChatSDK initialization failed: $e',
+        stack,
+      );
     }
   }
 

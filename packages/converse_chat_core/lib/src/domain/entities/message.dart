@@ -137,13 +137,16 @@ class Message {
       chatId: json['chatId'] as String,
       senderId: json['senderId'] as String,
       text: json['text'] as String?,
-      attachment: json['attachment'] != null
-          ? Attachment.fromJson(Map<String, dynamic>.from(json['attachment']))
-          : null,
+      attachment:
+          json['attachment'] != null
+              ? Attachment.fromJson(
+                Map<String, dynamic>.from(json['attachment']),
+              )
+              : null,
       createdAt: json['createdAt'] as int,
       readBy: List<String>.from(json['readBy'] ?? []),
       status: MessageStatus.values.firstWhere(
-            (s) => s.name == (json['status'] ?? 'sent'),
+        (s) => s.name == (json['status'] ?? 'sent'),
         orElse: () => MessageStatus.sent,
       ),
     );

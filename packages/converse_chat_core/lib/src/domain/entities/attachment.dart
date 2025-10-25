@@ -30,9 +30,10 @@ class Attachment {
       id: json['id']?.toString() ?? '',
       url: json['url']?.toString() ?? '',
       mimeType: json['mimeType']?.toString() ?? 'application/octet-stream',
-      size: (json['size'] is int)
-          ? json['size'] as int
-          : int.tryParse(json['size']?.toString() ?? '0') ?? 0,
+      size:
+          (json['size'] is int)
+              ? json['size'] as int
+              : int.tryParse(json['size']?.toString() ?? '0') ?? 0,
     );
   }
 
@@ -40,21 +41,11 @@ class Attachment {
   ///
   /// Used for Firestore writes, REST APIs, and local persistence.
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'url': url,
-      'mimeType': mimeType,
-      'size': size,
-    };
+    return {'id': id, 'url': url, 'mimeType': mimeType, 'size': size};
   }
 
   /// Returns a copy of this attachment with optional changes.
-  Attachment copyWith({
-    String? id,
-    String? url,
-    String? mimeType,
-    int? size,
-  }) {
+  Attachment copyWith({String? id, String? url, String? mimeType, int? size}) {
     return Attachment(
       id: id ?? this.id,
       url: url ?? this.url,
@@ -70,13 +61,14 @@ class Attachment {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Attachment &&
-              runtimeType == other.runtimeType &&
-              id == other.id &&
-              url == other.url &&
-              mimeType == other.mimeType &&
-              size == other.size;
+      other is Attachment &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          url == other.url &&
+          mimeType == other.mimeType &&
+          size == other.size;
 
   @override
-  int get hashCode => id.hashCode ^ url.hashCode ^ mimeType.hashCode ^ size.hashCode;
+  int get hashCode =>
+      id.hashCode ^ url.hashCode ^ mimeType.hashCode ^ size.hashCode;
 }

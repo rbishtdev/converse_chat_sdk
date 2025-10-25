@@ -34,7 +34,8 @@ class ErrorMapper {
 
     if (message.contains('network') || message.contains('timeout')) {
       return NetworkFailure(message);
-    } else if (message.contains('permission') || message.contains('unauthorized')) {
+    } else if (message.contains('permission') ||
+        message.contains('unauthorized')) {
       return PermissionFailure(message);
     } else if (message.contains('not found')) {
       return NotFoundFailure(message);

@@ -19,7 +19,6 @@ class ChatController {
   final PluginRegistry plugins;
   final String currentUserId;
 
-
   ChatController({
     required this.chatRepository,
     required this.attachmentRepository,
@@ -30,9 +29,9 @@ class ChatController {
 
   /// Watches messages in real-time for a given chat.
   Stream<Either<ChatFailure, List<Message>>> watchMessages(
-      String chatId, {
-        int limit = 50,
-      }) {
+    String chatId, {
+    int limit = 50,
+  }) {
     return chatRepository.watchMessages(chatId, limit: limit).map((either) {
       return either.map((messages) {
         for (final message in messages) {
@@ -79,10 +78,10 @@ class ChatController {
     // 2️⃣ Handle Either using matchAsync (async-aware)
     await uploadResult.match(
       // 🔹 Failure → throw typed exception
-          (failure) async => throw ErrorMapper.toException(failure),
+      (failure) async => throw ErrorMapper.toException(failure),
 
       // 🔹 Success → proceed
-          (attachment) async {
+      (attachment) async {
         final message = Message(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
           chatId: chatId,
@@ -103,8 +102,8 @@ class ChatController {
           );
         });
         await sendResult.match(
-              (failure) async => throw ErrorMapper.toException(failure),
-              (_) async => null,
+          (failure) async => throw ErrorMapper.toException(failure),
+          (_) async => null,
         );
       },
     );
@@ -118,14 +117,13 @@ class ChatController {
         await chatRepository.updateMessageStatus(
           message.chatId,
           message.id,
-          MessageStatus.delivered
+          MessageStatus.delivered,
         );
       }
     } catch (e) {
       debugPrint('⚠️ Failed to update message status: $e');
     }
   }
-
 
   /// Disposes the controller and all active plugins.
   Future<void> dispose() async {

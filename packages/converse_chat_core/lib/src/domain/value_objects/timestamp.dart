@@ -7,10 +7,10 @@ class Timestamp {
   const Timestamp(this.millisecondsSinceEpoch);
 
   /// Returns current timestamp.
-  factory Timestamp.now() =>
-      Timestamp(DateTime.now().millisecondsSinceEpoch);
+  factory Timestamp.now() => Timestamp(DateTime.now().millisecondsSinceEpoch);
 
-  DateTime toDateTime() => DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
+  DateTime toDateTime() =>
+      DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
 
   bool isBefore(Timestamp other) =>
       millisecondsSinceEpoch < other.millisecondsSinceEpoch;
@@ -24,7 +24,7 @@ class Timestamp {
   @override
   bool operator ==(Object other) =>
       other is Timestamp &&
-          other.millisecondsSinceEpoch == millisecondsSinceEpoch;
+      other.millisecondsSinceEpoch == millisecondsSinceEpoch;
 
   @override
   int get hashCode => millisecondsSinceEpoch.hashCode;
