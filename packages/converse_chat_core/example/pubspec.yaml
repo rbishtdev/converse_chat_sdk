@@ -1,0 +1,10 @@
+name: converse_chat_core_example
+description: Example demonstrating Converse Chat Core domain logic.
+publish_to: none
+
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  converse_chat_core:
+    path: ../
