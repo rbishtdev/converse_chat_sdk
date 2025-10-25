@@ -1,9 +1,9 @@
 name: converse_chat_core
 description: Core logic and data models for the Converse Chat SDK.
 version: 1.0.0
-repository: https://github.com/rbishtdev/converse_chat_sdk/tree/main/packages/converse_chat_core
-issue_tracker: https://github.com/yourusername/converse_chat_sdk/issues
-homepage: https://github.com/rbishtdev/converse_chat_sdk
+repository: https://github.com/rbishtdev/converse_flutter_chat_sdk/tree/main/packages/converse_chat_core
+issue_tracker: https://github.com/rbishtdev/converse_flutter_chat_sdk/issues
+homepage: https://github.com/rbishtdev/converse_flutter_chat_sdk
 topics:
   - chat
   - sdk
@@ -13,11 +13,8 @@ topics:
 
 environment:
   sdk: ^3.7.2
-  flutter: ">=1.17.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
   uuid: ^4.5.1
   fpdart: ^1.1.1
   crypto: ^3.0.6

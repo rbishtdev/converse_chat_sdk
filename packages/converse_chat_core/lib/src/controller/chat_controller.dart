@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:converse_chat_core/converse_chat_core.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -121,7 +120,7 @@ class ChatController {
         );
       }
     } catch (e) {
-      debugPrint('⚠️ Failed to update message status: $e');
+      print('⚠️ Failed to update message status: $e');
     }
   }
 
