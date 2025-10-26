@@ -1,7 +1,15 @@
 name: converse_chat_sdk
-description: "A new Flutter package project."
-version: 0.0.1
-homepage:
+description: The official Flutter SDK for Converse Chat — a modular, scalable chat framework built with clean architecture. Provides ready-to-use APIs for messaging, presence, and user management using Firebase.
+version: 1.0.0
+repository: https://github.com/rbishtdev/converse_flutter_chat_sdk/tree/main/packages/converse_chat_sdk
+issue_tracker: https://github.com/rbishtdev/converse_flutter_chat_sdk/issues
+homepage: https://github.com/rbishtdev/converse_flutter_chat_sdk
+topics:
+  - chat
+  - sdk
+  - flutter
+  - firebase-chat
+  - realtime
 
 environment:
   sdk: ^3.7.2
@@ -11,10 +19,8 @@ dependencies:
   flutter:
     sdk: flutter
   fpdart: ^1.1.0
-  converse_chat_core:
-    path: ../converse_chat_core
-  converse_chat_adapters:
-    path: ../converse_chat_adapters
+  converse_chat_core: ^1.0.0
+  converse_chat_adapters: ^1.0.0
 
 dev_dependencies:
   flutter_test:
