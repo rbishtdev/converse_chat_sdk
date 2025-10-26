@@ -54,7 +54,7 @@ class _FirebaseAdapterExampleState extends State<FirebaseAdapterExample> {
     adapter = await FirebaseChatAdapter.createDefault();
 
     // 2️⃣ Ensure chat exists between two users
-    final chatResult = await adapter.chat.ensureChatExists('user_a', 'user_b');
+    final chatResult = await adapter.chat.createOrJoinChat('user_a', 'user_b');
     final chatId = chatResult.getOrElse((_) => 'default_chat');
     log += '💬 Chat created: $chatId\n';
 

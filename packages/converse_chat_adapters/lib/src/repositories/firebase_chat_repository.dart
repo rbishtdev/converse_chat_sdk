@@ -134,7 +134,7 @@ class FirebaseChatRepository implements IChatRepository {
   }
 
   @override
-  Future<Either<ChatFailure, String>> ensureChatExists(
+  Future<Either<ChatFailure, String>> createOrJoinChat(
       String userAId,
       String userBId,
       ) async {
