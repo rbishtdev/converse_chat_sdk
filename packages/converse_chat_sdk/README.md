@@ -46,6 +46,32 @@ Then fetch the dependencies:
 flutter pub get
 ```
 
+## 🔧 Firebase Configuration
+
+The Converse Chat SDK uses **Firebase** as its default backend adapter.
+
+### ✅ If your project is already configured with Firebase:
+You can use the SDK **directly** — no additional setup required.
+
+### ⚙️ If your project is **not yet configured** with Firebase:
+You’ll need to set up Firebase first:
+
+1. Run the FlutterFire CLI to connect your app:
+   ```bash
+   flutterfire configure
+   ```
+2. This command will generate the `firebase_options.dart` file automatically.
+3. Once configured, you can use the chat SDK normally:
+
+> 🧠 **Note:**
+> - Do **not** commit your `firebase_options.dart` file to version control.
+> - Add it to your `.gitignore` for security:
+    >   ```
+>   firebase_options.dart
+>   */firebase_options.dart
+>   **/firebase_options.dart
+>   ```
+
 ---
 
 # 💬 Converse Flutter Chat SDK — Example: ChatScreen
