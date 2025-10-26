@@ -1,0 +1,4 @@
+# melos_managed_dependency_overrides: converse_chat_core
+dependency_overrides:
+  converse_chat_core:
+    path: ../converse_chat_core
