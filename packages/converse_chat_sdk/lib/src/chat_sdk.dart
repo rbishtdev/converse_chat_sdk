@@ -227,11 +227,11 @@ class ConverseChatClient {
   ///   (chatId) => print("Chat ready: $chatId"),
   /// );
   /// ```
-  Future<Either<ChatFailure, String>> ensureChatExists(
+  Future<Either<ChatFailure, String>> createOrJoinChat(
       String userA,
       String userB,
       ) async {
-    return await messages.chatRepository.ensureChatExists(userA, userB);
+    return await messages.chatRepository.createOrJoinChat(userA, userB);
   }
 
   /// Watches the last seen timestamp for a specific user.

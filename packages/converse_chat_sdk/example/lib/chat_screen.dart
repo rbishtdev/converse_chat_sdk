@@ -83,7 +83,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       await ConverseChatClient.initialize(currentUserId: _userA);
       await _converseChatClient.setOnlineStatus(_userA, true);
 
-      final chatResult = await _converseChatClient.ensureChatExists(_userA, _userB);
+      final chatResult = await _converseChatClient.createOrJoinChat(_userA, _userB);
       chatResult.match(
             (failure) => debugPrint('❌ Failed to create chat: ${failure.message}'),
             (chatId) async {
