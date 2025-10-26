@@ -13,8 +13,11 @@ topics:
 
 environment:
   sdk: ^3.7.2
+  flutter: ">=3.22.0"
 
 dependencies:
+  flutter:
+    sdk: flutter
   converse_chat_core: ^1.0.0
 
   # Firebase SDKs
@@ -22,6 +25,7 @@ dependencies:
   cloud_firestore: ^6.0.3
   firebase_storage: ^13.0.3
   firebase_database: ^12.0.3
+
   fpdart: ^1.1.1
 
 dev_dependencies:
