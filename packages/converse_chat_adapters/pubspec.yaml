@@ -1,5 +1,5 @@
 name: converse_chat_adapters
-description: Firebase-based infrastructure layer for the Converse Chat SDK. Implements repository interfaces from converse_chat_core for chat, user, presence, and attachment management.
+description: Firebase-based infrastructure layer for the Converse Chat SDK. Implements repository interfaces from converse_chat_core for chat, user, presence, typing and  attachment management.
 version: 1.0.0
 repository: https://github.com/rbishtdev/converse_flutter_chat_sdk/tree/main/packages/converse_chat_adapters
 issue_tracker: https://github.com/rbishtdev/converse_flutter_chat_sdk/issues
