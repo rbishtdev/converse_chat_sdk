@@ -1,0 +1,149 @@
+# =============================================
+# FLUTTER / DART
+# =============================================
+
+# Flutter build and cache directories
+build/
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+.generated/
+.flutter-versions
+
+# Dart/Flutter dependency lock file
+pubspec.lock
+
+# Coverage output
+coverage/
+test_coverage.json
+
+# =============================================
+# PLATFORM: ANDROID
+# =============================================
+
+# Gradle & Android Studio
+.gradle/
+**/build/
+**/captures/
+local.properties
+*.iml
+.idea/
+.gradle/
+*.apk
+*.aar
+*.aab
+*.keystore
+*.jks
+*.dex
+*.class
+*.log
+
+# Android NDK / external build cache
+.cxx/
+.externalNativeBuild/
+
+# Jetifier cache
+.jetifier-cache/
+
+# =============================================
+# PLATFORM: iOS
+# =============================================
+
+# Xcode user data and build output
+DerivedData/
+*.xcuserstate
+*.xcuserdata/
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+*.xcworkspace/
+!default.xcworkspace/contents.xcworkspacedata
+
+# iOS build artifacts
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/ServiceDefinitions.json
+ios/Runner/GeneratedPluginRegistrant.*
+
+# CocoaPods
+ios/Pods/
+Podfile.lock
+podfile.lock
+
+# Flutter iOS ephemeral build artifacts
+ios/.symlinks/
+ios/Flutter/ephemeral/
+
+# =============================================
+# IDEs & EDITORS
+# =============================================
+
+# VS Code
+.vscode/
+.history/
+*.code-workspace
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+
+# macOS Finder
+.DS_Store
+
+# Windows File Explorer
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =============================================
+# ENV / SECRETS / CREDENTIALS
+# =============================================
+
+.env
+.env.*
+*.secret
+*.credentials
+credentials.json
+keystore.properties
+google-services.json
+GoogleService-Info.plist
+firebase_app_id_file.json
+
+# =============================================
+# LOGS / TEMP / BACKUPS
+# =============================================
+
+*.log
+*.tmp
+*.temp
+*.swp
+*.bak
+*.old
+*.orig
+*.lock
+
+# =============================================
+# FIREBASE / FLUTTER DEV FILES
+# =============================================
+
+.firebase/
+firebase-debug.log
+firebase-debug.*
+firestore-debug.log
+
+# =============================================
+# ARCHIVES
+# =============================================
+
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+
+# =============================================
+# END OF FILE
+# =============================================
