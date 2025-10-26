@@ -1,3 +1,15 @@
+## 1.0.1
+
+### 🧹 Improvements
+- Renamed method `ensureChatExists` → `createOrJoinChat` for better readability and consistency across SDK layers.
+- Aligned core naming with upcoming adapter and SDK packages.
+- Updated internal docs and examples.
+
+### ℹ️ Notes
+This update refines API naming prior to public adoption.
+No functional or breaking changes — safe to upgrade.
+
+
 ## 1.0.0
 
 - Initial release of **Converse Chat Adapters** 🎉
