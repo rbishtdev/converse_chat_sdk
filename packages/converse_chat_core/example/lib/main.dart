@@ -132,7 +132,7 @@ class _MockChatRepository implements IChatRepository {
   }
 
   @override
-  Future<Either<ChatFailure, String>> ensureChatExists(String userA, String userB) async {
+  Future<Either<ChatFailure, String>> createOrJoinChat(String userA, String userB) async {
     return right('chat_1');
   }
 }

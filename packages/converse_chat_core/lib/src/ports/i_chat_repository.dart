@@ -96,7 +96,7 @@ abstract class IChatRepository {
   /// - Return the chat ID for reuse
   ///
   /// This is a convenience method to avoid duplicate 1:1 chats.
-  Future<Either<ChatFailure, String>> ensureChatExists(
+  Future<Either<ChatFailure, String>> createOrJoinChat(
     String userAId,
     String userBId,
   );
